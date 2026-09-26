@@ -1,0 +1,29 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables / secrets
+.env
+
+# Logs
+logs/
+*.log
+
+# VS Code
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Real academy/student data
+data/
+real_samples/
+academy-data/
+
+# Temporary files
+temp/
+tmp/
