@@ -27,3 +27,5 @@ academy-data/
 # Temporary files
 temp/
 tmp/
+
+echo "*.egg-info/" >> .gitignore*.egg-info/

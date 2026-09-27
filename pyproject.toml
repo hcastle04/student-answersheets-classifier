@@ -2,4 +2,4 @@
 name = "student-answer-classifier"
 version = "0.1.0"
 description = "Automated PDF classifier for student essay answer sheets"
-requires-python = ">=3.13" 
+requires-python = ">=3.10" 
