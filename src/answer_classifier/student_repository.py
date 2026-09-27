@@ -10,10 +10,39 @@ SYSTEM_FOLDER_NAMES = {
     "신규생",
 }
 
+def parse_student_folder_name( 
+    folder_name: str,
+) -> tuple[str, str | None]:
+    """
+    학생 폴더명에서 학생 이름과 학교명을 분리한다.
+
+    예:
+        김주훈
+        -> ("김주훈", None)
+
+        민윤기(달천고)
+        -> ("민윤기", "달천고")
+    """
+
+    normalized = folder_name.strip()
+
+    if not normalized:
+        raise ValueError("학생 폴더명이 비어 있습니다.")
+
+    if normalized.endswith(")") and "(" in normalized:
+        name, school_part = normalized.rsplit("(", 1)
+
+        name = name.strip()
+        school = school_part[:-1].strip()
+
+        if name and school:
+            return name, school
+
+    return normalized, None
+
 
 def load_students(
-    base_dir: Path,
-    school: str | None = None,
+    base_dir: Path, ##school을 넘길 필요 없음
 ) -> list[Student]:
     """
     학생 폴더를 읽어 Student 목록으로 변환한다.
@@ -37,12 +66,15 @@ def load_students(
 
         if path.name in SYSTEM_FOLDER_NAMES:
             continue
+        
+        name, school = parse_student_folder_name(path.name)
 
         students.append(
             Student(
-                name=path.name,
+                name=name,
                 school=school,
+                folder_name=path.name,
             )
         )
-
     return students
+
