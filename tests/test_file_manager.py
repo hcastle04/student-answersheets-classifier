@@ -114,7 +114,7 @@ def test_classified_result_uses_existing_student_directory( ##classified 된 김
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -142,7 +142,7 @@ def test_classified_result_does_not_create_missing_student_directory( ##
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -171,7 +171,7 @@ def test_review_result_uses_review_directory( ##보류폴더 테스트 : 보류�
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -200,7 +200,7 @@ def test_new_student_result_uses_new_student_directory( ##신규생 테스트
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -229,7 +229,7 @@ def test_classified_result_without_student_raises_error( ##classified인데 없�
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -262,7 +262,7 @@ def test_move_classified_pdf_moves_pdf_to_student_directory( ##classified된 파
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -302,7 +302,7 @@ def test_move_classified_pdf_renames_duplicate_file( ##실제 이동, 중복 파
         group_type="S",
         student_root=student_root,
         review_dir=review_dir,
-        school=None,
+        ##school=None,
     )
 
     result = ClassificationResult(
@@ -320,3 +320,66 @@ def test_move_classified_pdf_renames_duplicate_file( ##실제 이동, 중복 파
 
     assert existing.read_text() == "existing answer"
     assert moved_path.read_text() == "new answer"
+
+
+
+def test_get_destination_dir_uses_student_folder_name( ##테스트 추가 : 폴더명 오류
+    tmp_path: Path,
+):
+    student_root = tmp_path / "S반"
+    student_dir = student_root / "민윤기(달천고)"
+    student_dir.mkdir(parents=True)
+
+    context = InputContext(
+        group_type="S",
+        student_root=student_root,
+        review_dir=student_root / "보류",
+    )
+
+    student = Student(
+        name="민윤기",
+        school="달천고",
+        folder_name="민윤기(달천고)",
+    )
+
+    result = ClassificationResult(
+        status=ClassificationStatus.CLASSIFIED,
+        student=student,
+    )
+
+    destination = get_destination_dir(
+        result=result,
+        context=context,
+    )
+
+    assert destination == student_dir    
+
+
+def test_get_destination_dir_falls_back_to_student_name( ##테스트 추가 : 기존 folder_name이 없어도 작동하는지.
+    tmp_path: Path,
+):
+    student_root = tmp_path / "S반"
+    student_dir = student_root / "김민수"
+    student_dir.mkdir(parents=True)
+
+    context = InputContext(
+        group_type="S",
+        student_root=student_root,
+        review_dir=student_root / "보류",
+    )
+
+    student = Student(
+        name="김민수",
+    )
+
+    result = ClassificationResult(
+        status=ClassificationStatus.CLASSIFIED,
+        student=student,
+    )
+
+    destination = get_destination_dir(
+        result=result,
+        context=context,
+    )
+
+    assert destination == student_dir
