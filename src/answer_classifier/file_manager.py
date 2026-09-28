@@ -75,13 +75,17 @@ def get_destination_dir( ##추가
     PDF가 이동해야 할 목적지 폴더를 결정한다.
     """
 
-    if result.status == ClassificationStatus.CLASSIFIED:
+    if result.status == ClassificationStatus.CLASSIFIED: 
         if result.student is None:
             raise ValueError(
                 "CLASSIFIED result must contain a student."
             )
+        folder_name = ( ##학생 이름별 폴더 변경으로 수정
+        result.student.folder_name 
+        or result.student.name
+        )
 
-        student_dir = context.student_root / result.student.name
+        student_dir = context.student_root / folder_name
 
         # 기존 학생 폴더는 자동 생성하지 않는다.
         if not student_dir.exists():

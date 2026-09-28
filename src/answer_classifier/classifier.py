@@ -13,6 +13,7 @@ class ClassificationStatus(str, Enum):
 class Student:
     name: str
     school: Optional[str] = None
+    folder_name: Optional[str] = None
 
 
 @dataclass(frozen=True)
